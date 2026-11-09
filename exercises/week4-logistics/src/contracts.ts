@@ -1,22 +1,22 @@
 // Proposed cross-module contracts (partner confirmation pending).
 
 export type ShipmentStatus =
-  | 'CREATED'
-  | 'LABEL_CREATED'
-  | 'IN_TRANSIT'
-  | 'OUT_FOR_DELIVERY'
-  | 'DELIVERED'
-  | 'DELIVERY_FAILED'
-  | 'RETURNED'
-  | 'CANCELLED';
+  | "CREATED"
+  | "LABEL_CREATED"
+  | "IN_TRANSIT"
+  | "OUT_FOR_DELIVERY"
+  | "DELIVERED"
+  | "DELIVERY_FAILED"
+  | "RETURNED"
+  | "CANCELLED";
 
-export type ShippingMethod = 'STANDARD' | 'EXPRESS';
+export type ShippingMethod = "STANDARD" | "EXPRESS";
 
 /** Inbound from the order / accounting boundary. */
 export interface OrderReadyForShipping {
   orderId: string;
   customerId: string;
-  paymentStatus: 'PAID';
+  paymentStatus: "PAID";
   shippingAddress: {
     fullName: string;
     street: string;

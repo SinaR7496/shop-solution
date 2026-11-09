@@ -16,5 +16,5 @@ description: Add, remove or change a shipment status or an allowed status transi
    - one test per new allowed transition,
    - at least one forbidden transition into and out of the new status,
    - a duplicate-webhook (idempotent) case.
-7. Run `node --test` and the TypeScript compile; report results.
+7. Run `pnpm test` and `pnpm typecheck`; report results.
 8. If the change affects another module (Accounting, Storefront), add an open question to `INTERFACE_REVIEW.md` instead of assuming agreement.
