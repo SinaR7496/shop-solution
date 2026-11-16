@@ -188,9 +188,12 @@ describe("public discovery contracts", () => {
       request("productId=prd_1"),
     );
     expect(response.status).toBe(503);
-    expect((await response.json()).error.code).toBe(
-      "RECOMMENDATION_DATA_UNAVAILABLE",
-    );
+    expect(await response.json()).toEqual({
+      error: {
+        code: "RECOMMENDATION_DATA_UNAVAILABLE",
+        message: "Purchase data is temporarily unavailable.",
+      },
+    });
   });
 });
 describe("snapshot integrity", () => {

@@ -11,3 +11,4 @@ export type {
   RecommendationQueryParams,
 } from "./types/responses";
 export { SearchPlayground } from "./components/playground";
+export { DiscoveryWorkbench } from "./components/discovery-workbench";

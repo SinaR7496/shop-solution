@@ -10,6 +10,13 @@ Mock-backed implementation of five anonymous GET APIs and developer documentatio
 - `/api/v1/recommendations/similar`: same-category attribute/price ranking.
 - `/api/v1/recommendations/also-bought`: synthetic co-purchase ranking, empty without evidence.
 - `/docs/search-recommendations`: browser documentation, examples, request explorer.
+- `/docs/search-recommendations/discover`: developer-facing UI for the public,
+  mock-backed search and recommendation APIs. Storefront continues to own the
+  customer-facing shopping UI.
+- `/api/integrations/admin-identity/session`: same-origin proxy for the
+  Admin & Identity `GET /auth/session` contract, used only to display shared
+  login status in the discovery workbench. It forwards the session cookie,
+  validates the response, and does not gate anonymous discovery APIs.
 - `/docs/search-recommendations/openapi.json`: schema-derived OpenAPI 3.1 download.
 
 All JSON success responses use `{ data: ... }`; failures use `{ error: { code, message } }`. Public endpoints require no token and return only active offers, including out-of-stock offers by default. Requests reject unknown/repeated keys and invalid numbers. Query defaults, limits, schemas, response examples and errors are documented on the website and in [API-CONTRACT.md](../../../docs/search-recommendations/API-CONTRACT.md).
