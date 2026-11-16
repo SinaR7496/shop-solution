@@ -34,11 +34,28 @@ const teams: {
         label: "OpenAPI contract",
         href: "/docs/search-recommendations/openapi.yaml",
       },
+      {
+        label: "Discovery workbench",
+        href: "/docs/search-recommendations/discover",
+      },
       { label: "Playground", href: "/docs/search-recommendations/playground" },
     ],
   },
   { slug: "accounting", name: "Accounting" },
-  { slug: "admin-identity", name: "Admin & Identity" },
+  {
+    slug: "admin-identity",
+    name: "Admin & Identity",
+    links: [
+      {
+        label: "Admin & Identity UI",
+        href: "http://localhost:5500/",
+      },
+      {
+        label: "API docs",
+        href: "http://localhost:8000/docs",
+      },
+    ],
+  },
   { slug: "analytics-reporting", name: "Analytics & Reporting" },
   { slug: "crm", name: "CRM" },
   { slug: "logistics", name: "Logistics" },
@@ -66,7 +83,7 @@ export default function DocsHub() {
       </header>
       <div className="grid gap-4 sm:grid-cols-2">
         {teams.map((team) => (
-          <Card key={team.slug}>
+          <Card key={team.slug} id={`team-${team.slug}`}>
             <CardHeader>
               <CardTitle>{team.name}</CardTitle>
               <CardDescription>

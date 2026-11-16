@@ -10,6 +10,7 @@ import {
 import { endpointDefinitions, docsBase, isEndpointKey } from "../docs/registry";
 import { CodeBlock, CodeExamples } from "./code-examples";
 import { RequestExplorer } from "./request-explorer";
+import { DiscoveryWorkbench } from "./discovery-workbench";
 import { displayOrigin } from "../server/origin";
 // The deployed address on Vercel, localhost in development.
 const baseUrl = () => displayOrigin() ?? "http://localhost:3000";
@@ -65,6 +66,7 @@ function Table({
 }
 export function DocsContent({ slug }: { slug: string }) {
   if (mcpDocSlugs.includes(slug)) return <McpDocsContent slug={slug} />;
+  if (slug === "discover") return <DiscoveryWorkbench />;
   if (isEndpointKey(slug)) {
     const e = endpointDefinitions[slug],
       url = e.path + "?" + e.exampleQuery;

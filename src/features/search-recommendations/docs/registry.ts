@@ -23,6 +23,11 @@ export const docPages = [
     group: "MCP & playground",
   },
   { slug: "playground", title: "Team playground", group: "MCP & playground" },
+  {
+    slug: "discover",
+    title: "Discovery workbench",
+    group: "Developer tools",
+  },
   { slug: "mcp-local", title: "Local MCP setup", group: "MCP & playground" },
   {
     slug: "mcp-troubleshooting",
