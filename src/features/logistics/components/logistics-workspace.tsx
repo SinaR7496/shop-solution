@@ -228,7 +228,7 @@ export function LogisticsWorkspace({
     setCreateError(false);
     const f = new FormData(e.currentTarget);
     const orderId = input(f, "orderId");
-    if (!/^[OM]-[0-9]+$/.test(orderId)) {
+    if (!/^(O|M|ORD)-[0-9]+$/.test(orderId)) {
       setCreateError(true);
       setCreateMessage("Please enter an Order ID like O-1 or M-1.");
       return;
@@ -421,7 +421,7 @@ export function LogisticsWorkspace({
                 e.preventDefault();
                 if (
                   filters.orderId &&
-                  !/^[OM]-[0-9]+$/.test(filters.orderId.trim())
+                  !/^(O|M|ORD)-[0-9]+$/.test(filters.orderId.trim())
                 ) {
                   setListError("Please enter an Order ID like O-1 or M-1.");
                   return;
@@ -775,7 +775,7 @@ export function LogisticsWorkspace({
         </>
       )}
       <footer className="border-t pt-4 text-xs text-muted-foreground">
-        Logistics · Session 6 · Contract v1.2.0 · Data is in memory and resets
+        Logistics · Session 6 · Contract v1.3.0 · Data is in memory and resets
         on restart.
       </footer>
     </main>

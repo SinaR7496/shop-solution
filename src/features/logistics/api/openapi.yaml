@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Logistics API
-  version: 1.2.0
+  version: 1.3.0
   summary: Shipments and delivery status for the shop ERP.
   description: |
     Logistics turns paid orders into shipments and tracks them until delivery, return or cancellation.
@@ -10,7 +10,8 @@ info:
     Status: 1.0.0 is the version Storefront, Accounting and Logistics agreed in the
     "Order to Shipment" flow (session 7, see docs/session7/flow.md). 1.1.0 adds the optional
     `paymentReference` that Accounting sends with a paid order. 1.2.0 adds `listShippingMethods`
-    (`GET /shipping/methods`) for Storefront's checkout. Additions only, no breaking change.
+    (`GET /shipping/methods`) for Storefront's checkout. 1.3.0 also accepts order ids like
+    `ORD-100001` (Accounting's format). Additions only, no breaking change.
     Changelog: CONTRACT_REVIEW.md.
 
     Identifiers: an order id looks like `O-1001` (Storefront) or `M-2001` (Marketplace), a shipment id like `S-2001`.
@@ -276,9 +277,9 @@ components:
   schemas:
     OrderId:
       type: string
-      pattern: "^[OM]-[0-9]+$"
-      description: Order id from the Storefront (O- and digits, example O-1001) or sale id from the Marketplace (M- and digits, example M-2001).
-      examples: [O-1001, M-2001]
+      pattern: "^(O|M|ORD)-[0-9]+$"
+      description: Order id from the Storefront (O- and digits, example O-1001), sale id from the Marketplace (M- and digits, example M-2001), or order id in Accounting's format (ORD- and digits, example ORD-100001, accepted since 1.3.0).
+      examples: [O-1001, M-2001, ORD-100001]
     ShipmentId:
       type: string
       pattern: "^S-[0-9]{4,}$"

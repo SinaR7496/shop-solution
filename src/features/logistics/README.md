@@ -57,6 +57,7 @@ endpoint does not serve as service-to-service authentication for Accounting.
   carry an optional `paymentReference` (contract 1.1.0). Other extra fields are
   rejected. A second shipment for the same order returns
   `409 ORDER_ALREADY_HAS_SHIPMENT`.
+- **Order ids** `O-…`, `M-…` and Accounting's `ORD-…` are accepted (contract 1.3.0).
 - **Storefront checkout.** `GET /shipping/methods` (contract 1.2.0) lists the
   delivery options with carrier, delivery time and price.
 - **Session 7.** Flow, threat list, safeguard and `servers.json` are in

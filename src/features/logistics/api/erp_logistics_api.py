@@ -39,7 +39,7 @@ class Address(BaseModel):
 
 class OrderReadyForShipping(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    orderId: str = Field(pattern=r"^[OM]-[0-9]+$")
+    orderId: str = Field(pattern=r"^(O|M|ORD)-[0-9]+$")  # ORD- accepted since 1.3.0
     customerId: str = Field(min_length=1)
     paymentStatus: Literal["PAID"]
     shippingAddress: Address
@@ -170,7 +170,7 @@ def create_shipment(order: OrderReadyForShipping):
 
 @app.get("/shipments")
 def list_shipments(
-    orderId: str | None = Query(None, pattern=r"^[OM]-[0-9]+$"),
+    orderId: str | None = Query(None, pattern=r"^(O|M|ORD)-[0-9]+$"),
     customerId: str | None = Query(None, min_length=1),
     status: ShipmentStatus | None = None,
     page: int = Query(1, ge=1),

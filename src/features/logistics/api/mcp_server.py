@@ -100,7 +100,7 @@ def create_shipment(
     ORDER_ALREADY_HAS_SHIPMENT. Do not use it to change an existing shipment.
 
     Arguments:
-    - order_id: the ORDER id, "O-" plus digits from the Storefront (e.g. "O-1001") or "M-" plus digits from the Marketplace (e.g. "M-2001"). Not a shipment id.
+    - order_id: the ORDER id: "O-" plus digits from the Storefront (e.g. "O-1001"), "M-" plus digits from the Marketplace (e.g. "M-2001") or "ORD-" plus digits from Accounting (e.g. "ORD-100001"). Not a shipment id.
     - customer_id: the customer id, any non-empty text, e.g. "C-501".
     - payment_status: must be "PAID". Only paid orders can be shipped.
     - recipient_name, street, postal_code, city: the delivery address, e.g. "Erika Mustermann", "Hauptstrasse 1", "94469", "Deggendorf".

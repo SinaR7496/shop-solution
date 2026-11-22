@@ -61,9 +61,27 @@ def client():
 # --- Contract 1.1.0: additions only ---------------------------------------------------------------
 
 
-def test_contract_is_valid_openapi_and_has_version_1_2_0():
+def test_contract_is_valid_openapi_and_has_version_1_3_0():
     validate(api.SPEC)
-    assert api.SPEC["info"]["version"] == "1.2.0"
+    assert api.SPEC["info"]["version"] == "1.3.0"
+
+
+# --- Contract 1.3.0: tolerant input for the partners, nothing else changes ------------------------
+
+
+def test_accounting_order_id_format_is_accepted_and_found(client):
+    r = client.post("/shipments", json={**ORDER, "orderId": "ORD-100001"})
+    assert r.status_code == 201
+    conforms(r.json(), "Shipment")
+    found = client.get("/shipments", params={"orderId": "ORD-100001"}).json()["data"]
+    assert [s["orderId"] for s in found] == ["ORD-100001"]
+
+
+def test_old_order_id_formats_still_work_and_others_are_still_rejected(client):
+    assert client.post("/shipments", json={**ORDER, "orderId": "O-1"}).status_code == 201
+    assert client.post("/shipments", json={**ORDER, "orderId": "M-2"}).status_code == 201
+    for bad in ("ORD-", "ORDER-1", "X-1", "ord-1"):
+        assert client.post("/shipments", json={**ORDER, "orderId": bad}).status_code == 422, bad
 
 
 # --- Contract 1.2.0: shipping methods for Storefront's checkout ----------------------------------

@@ -1,6 +1,6 @@
 # Storefront, Accounting and Logistics integration
 
-Contract: `openapi.yaml` version **1.2.0**, signed off by Storefront (see `CONTRACT_REVIEW.md`).
+Contract: `openapi.yaml` version **1.3.0**, signed off by Storefront (see `CONTRACT_REVIEW.md`).
 
 Storefront sends order and delivery information to Accounting. After confirming
 payment, Accounting calls Logistics. Storefront reads shipment information from
@@ -54,8 +54,8 @@ characters; added in contract 1.1.0). Accounting checks payment before calling.
 `201` returns the created shipment. If Accounting repeats the same order ID,
 `409 ORDER_ALREADY_HAS_SHIPMENT` means a shipment already exists: read it with
 `GET /shipments?orderId=…`. Invalid payloads return `422`; other extra fields
-are rejected. Order ids must match `^[OM]-[0-9]+$`, e.g. `O-100001` (not
-`ORD-100001`).
+are rejected. Order ids must match `^(O|M|ORD)-[0-9]+$`, e.g. `O-100001` or
+`ORD-100001` (accepted since 1.3.0).
 
 ## Storefront lists shipping methods at checkout
 
@@ -65,7 +65,10 @@ list of methods with `code` (`STANDARD` or `EXPRESS`, the value to send as
 `estimatedDeliveryDays` (`min`, `max`) and `price` (`amountMinor`, `currency`;
 `499` means 4.99 EUR). Prices and delivery times are demo values.
 
-## Storefront reads shipment status
+## Storefront reads shipment status (optional)
+
+Live parcel tracking is done by the carrier. Storefront may show a one-line note
+with carrier and tracking number; this is optional.
 
 Use `Authorization: Bearer <Storefront token>` on both calls.
 

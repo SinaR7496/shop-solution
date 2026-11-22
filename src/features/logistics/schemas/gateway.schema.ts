@@ -2,7 +2,7 @@ import { z } from "zod";
 import { statuses } from "../types/shipment";
 export const createSchema = z
   .object({
-    orderId: z.string().regex(/^[OM]-[0-9]+$/),
+    orderId: z.string().regex(/^(O|M|ORD)-[0-9]+$/),
     customerId: z.string().min(1),
     paymentStatus: z.literal("PAID"),
     shippingAddress: z
@@ -32,7 +32,7 @@ export const filterSchema = z
   .object({
     orderId: z
       .string()
-      .regex(/^[OM]-[0-9]+$/)
+      .regex(/^(O|M|ORD)-[0-9]+$/)
       .optional(),
     customerId: z.string().min(1).optional(),
     status: z.enum(statuses).optional(),
