@@ -9,8 +9,14 @@ test-results/
 .DS_Store
 *.tsbuildinfo
 src/generated/
-
-# Logistics local verification
+# Search MCP development
 .venv/
 __pycache__/
 .pytest_cache/
+.vercel/
+
+# Local pnpm cache
+.pnpm-store/
+
+# Generated exports (PDFs, screenshots)
+output/

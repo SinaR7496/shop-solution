@@ -16,7 +16,14 @@ A shared university shop project built by ten teams in the Agent-Based Software 
 
 The starter includes Next.js, shared UI components, PostgreSQL configuration, Prisma auth models and an initial migration, Better Auth wiring, validation examples, tests, and GitHub workflows. The initial GitHub CI run passed.
 
-The shop's business features are still scaffolds. Login/signup screens, roles and permissions, SSO, 2FA, email delivery, and complete shopping flows are not implemented. Database-backed authentication still needs verification with PostgreSQL running. See [verification notes](docs/verification.md).
+The in-repository shop's business features are still scaffolds. The Search &
+Recommendations discovery workbench is available at
+`/docs/search-recommendations/discover`. Admin & Identity is provided by a
+separate project; this app reads its shared browser session but does not start
+its UI or API. This repository's own login/signup screens, roles and
+permissions, SSO, 2FA, email delivery, and complete shopping flows are not
+implemented. Database-backed authentication still needs verification with
+PostgreSQL running. See [verification notes](docs/verification.md).
 
 The proposed merge policy requires **two reviewers from two different groups other than the PR author's group**. Workflow code is included; enforcement requires a populated class roster and GitHub branch protection. These settings are not established just by cloning this repository.
 
@@ -180,12 +187,23 @@ pnpm db:deploy
 pnpm dev
 ```
 
+`pnpm dev` starts this shared Next.js application and the Discovery
+workbench at
+[localhost:3000/docs/search-recommendations/discover](http://localhost:3000/docs/search-recommendations/discover).
+The separate Admin & Identity project must be started independently; its local
+UI and API are expected at `http://localhost:5500/` and
+`http://localhost:8000/`. Its startup command is not part of this repository.
+When both projects use `localhost`, Discovery can read the shared Identity
+cookie through its same-origin session proxy.
+
 Open [localhost:3000](http://localhost:3000).
 
 - `/` displays the project starter page.
 - `/api/health` checks application liveness, not database readiness.
 - `/api/auth/*` is handled by Better Auth; persisted auth needs PostgreSQL and the applied migration.
-- Login, admin, and seller screens remain team implementation tasks.
+- In-repository login, admin, and seller screens remain team implementation
+  tasks. The separate Admin & Identity UI/API must be started by its own
+  project.
 
 If PostgreSQL is not ready, check `docker compose ps` and `docker compose logs db`. If port 5432 is occupied, change the host port in `compose.yml` and update `DATABASE_URL` to match. Use `docker compose stop db` to stop the database while retaining its data volume.
 
@@ -287,5 +305,7 @@ Tell the assistant your feature, task, and agreed contract. Review its diff and 
 | [Review policy](docs/review-policy.md)           | Cross-group approvals and required GitHub settings           |
 | [Class discussion](docs/class-review.md)         | Decisions still requiring class agreement                    |
 | [Verification notes](docs/verification.md)       | Tested behavior and remaining limitations                    |
+| [Shared design system](DESIGN.md)                | Current shared tokens, components and accessibility rules    |
+| [Frontend constitution](docs/constitution.md)    | Repository baseline and class decisions still to confirm     |
 
 Record accepted architecture decisions in `docs/decisions/` with context, the decision, and its consequences.
