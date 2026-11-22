@@ -341,9 +341,7 @@ export function LogisticsWorkspace({
     <main className="logistics-module mx-auto max-w-7xl space-y-6 p-4 md:p-8">
       <header className="flex flex-wrap items-center justify-between gap-4 border-b pb-5">
         <div>
-
           <h1 className="text-3xl font-semibold tracking-tight">Logistics</h1>
-
         </div>
         <nav aria-label="Module navigation" className="flex items-center gap-4">
           <Link className="underline" href="/">
@@ -374,9 +372,7 @@ export function LogisticsWorkspace({
         <Message>Checking session…</Message>
       ) : !user ? (
         <div className="max-w-lg">
-          <Section
-            title="Sign in to Logistics"
-          >
+          <Section title="Sign in to Logistics">
             {demo ? (
               <form onSubmit={login} className="space-y-4">
                 <Field id="email" label="Email">
@@ -779,8 +775,8 @@ export function LogisticsWorkspace({
         </>
       )}
       <footer className="border-t pt-4 text-xs text-muted-foreground">
-        Logistics · Session 6 · Contract v0.3.0-draft · Data is in memory and
-        resets on restart.
+        Logistics · Session 6 · Contract v1.2.0 · Data is in memory and resets
+        on restart.
       </footer>
     </main>
   );

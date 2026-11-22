@@ -44,6 +44,7 @@ class OrderReadyForShipping(BaseModel):
     paymentStatus: Literal["PAID"]
     shippingAddress: Address
     shippingMethod: Literal["STANDARD", "EXPRESS"]
+    paymentReference: str | None = Field(None, min_length=1, max_length=64, pattern=r"^[A-Za-z0-9-]+$")  # added in 1.1.0
 
 
 class CarrierStatusUpdate(BaseModel):
@@ -61,6 +62,7 @@ class Store:
     def __init__(self):
         self.shipments: dict[str, rules.Shipment] = {}
         self.events: dict[str, list[dict]] = {}
+        self.payment_references: dict[str, str] = {}  # added in 1.1.0
         self.next_number = 2001
 
 
@@ -79,7 +81,7 @@ def now() -> str:
 
 
 def to_contract(s: rules.Shipment) -> dict:
-    return {
+    result = {
         "shipmentId": s.shipment_id,
         "orderId": s.order_id,
         "customerId": s.customer_id,
@@ -90,6 +92,10 @@ def to_contract(s: rules.Shipment) -> dict:
         "updatedAt": s.updated_at,
         "failedAttempts": s.failed_attempts,
     }
+    reference = STORE.payment_references.get(s.shipment_id)
+    if reference is not None:
+        result["paymentReference"] = reference
+    return result
 
 
 def find(shipment_id: str) -> rules.Shipment:
@@ -139,6 +145,14 @@ async def handle_validation_error(_: Request, exc: RequestValidationError):
     return error_response(422, "VALIDATION_ERROR", f"{where}: {first['msg']}")
 
 
+@app.get("/shipping/methods")
+def list_shipping_methods(request: Request):
+    """Added in 1.2.0: delivery options for Storefront's checkout."""
+    if request.query_params:
+        raise ApiError(422, "VALIDATION_ERROR", "listShippingMethods takes no query parameters")
+    return {"data": [dict(method) for method in rules.SHIPPING_METHODS]}
+
+
 @app.post("/shipments", status_code=201)
 def create_shipment(order: OrderReadyForShipping):
     with LOCK:
@@ -149,6 +163,8 @@ def create_shipment(order: OrderReadyForShipping):
         shipment = rules.create_shipment(shipment_id, order.orderId, order.customerId, order.shippingMethod, now())
         STORE.shipments[shipment_id] = shipment
         STORE.events[shipment_id] = []
+        if order.paymentReference is not None:
+            STORE.payment_references[shipment_id] = order.paymentReference
         return to_contract(shipment)
 
 

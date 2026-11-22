@@ -23,6 +23,28 @@ MAX_DELIVERY_ATTEMPTS = 3
 
 CARRIER_BY_METHOD = {"STANDARD": "DHL", "EXPRESS": "UPS"}
 
+# Delivery options offered to Storefront's checkout (contract 1.2.0, listShippingMethods).
+# The carrier always matches CARRIER_BY_METHOD, so the shipment later gets the carrier the customer saw.
+# Prices and delivery times are demo values for this shop, in EUR minor units (499 = 4.99 EUR).
+SHIPPING_METHODS = (
+    {
+        "code": "STANDARD",
+        "carrierCode": CARRIER_BY_METHOD["STANDARD"],
+        "name": "Standard delivery",
+        "description": "Delivered by DHL in 2 to 4 working days.",
+        "estimatedDeliveryDays": {"min": 2, "max": 4},
+        "price": {"amountMinor": 499, "currency": "EUR"},
+    },
+    {
+        "code": "EXPRESS",
+        "carrierCode": CARRIER_BY_METHOD["EXPRESS"],
+        "name": "Express delivery",
+        "description": "Delivered by UPS in 1 to 2 working days.",
+        "estimatedDeliveryDays": {"min": 1, "max": 2},
+        "price": {"amountMinor": 1299, "currency": "EUR"},
+    },
+)
+
 _CANONICAL_UTC = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z$")
 
 

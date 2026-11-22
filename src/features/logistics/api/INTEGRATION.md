@@ -1,5 +1,7 @@
 # Storefront, Accounting and Logistics integration
 
+Contract: `openapi.yaml` version **1.2.0**, signed off by Storefront (see `CONTRACT_REVIEW.md`).
+
 Storefront sends order and delivery information to Accounting. After confirming
 payment, Accounting calls Logistics. Storefront reads shipment information from
 its server after it verifies that the signed-in customer owns the order.
@@ -46,11 +48,22 @@ python -m uvicorn demo_api:app --app-dir src/features/logistics/api --host 127.0
 }
 ```
 
-The other supported shipping method is `EXPRESS`. Accounting checks payment
-before calling. `201` returns the created shipment. If Accounting repeats
-the same order ID, `409 ORDER_ALREADY_HAS_SHIPMENT` means a shipment already
-exists. Invalid payloads return `422`. The current contract rejects
-`paymentReference` and other extra fields.
+The other supported shipping method is `EXPRESS`. Accounting may add the
+optional `"paymentReference": "PAY-1"` (letters, digits and `-`, at most 64
+characters; added in contract 1.1.0). Accounting checks payment before calling.
+`201` returns the created shipment. If Accounting repeats the same order ID,
+`409 ORDER_ALREADY_HAS_SHIPMENT` means a shipment already exists: read it with
+`GET /shipments?orderId=…`. Invalid payloads return `422`; other extra fields
+are rejected. Order ids must match `^[OM]-[0-9]+$`, e.g. `O-100001` (not
+`ORD-100001`).
+
+## Storefront lists shipping methods at checkout
+
+`GET /shipping/methods` (contract 1.2.0) needs no token. It returns `data`, a
+list of methods with `code` (`STANDARD` or `EXPRESS`, the value to send as
+`shippingMethod`), `carrierCode`, `name`, `description`,
+`estimatedDeliveryDays` (`min`, `max`) and `price` (`amountMinor`, `currency`;
+`499` means 4.99 EUR). Prices and delivery times are demo values.
 
 ## Storefront reads shipment status
 
@@ -70,3 +83,12 @@ Missing or invalid credentials return `401`. Valid credentials used for an
 operation outside their role return `403`. The service still uses in-memory
 storage for integration testing. See [OpenAPI](openapi.yaml) for schemas and
 domain errors.
+
+## MCP server
+
+`mcp_server.py` puts six tools in front of the API, one request each. Start it
+with `python mcp_server.py`, or with `python mcp_server.py --read-only` for
+tasks that only read: then `create_shipment` and `apply_status_update` do not
+exist. It reads the API address from `LOGISTICS_API_BASE_URL` (default
+`http://localhost:8000`) and talks to the unauthenticated `erp_logistics_api:app`.
+Entries for the stage 6 agent are in `../docs/session7/servers.json`.

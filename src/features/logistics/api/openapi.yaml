@@ -1,14 +1,17 @@
 openapi: 3.1.0
 info:
   title: Logistics API
-  version: 0.3.0-draft
+  version: 1.2.0
   summary: Shipments and delivery status for the shop ERP.
   description: |
     Logistics turns paid orders into shipments and tracks them until delivery, return or cancellation.
     Other modules (Storefront, Accounting) read shipments and delivery status through this API.
 
-    Status: DRAFT. Not yet approved by the Storefront team (see CONTRACT_REVIEW.md).
-    Fields marked `x-proposal: true` are proposals that need partner approval.
+    Status: 1.0.0 is the version Storefront, Accounting and Logistics agreed in the
+    "Order to Shipment" flow (session 7, see docs/session7/flow.md). 1.1.0 adds the optional
+    `paymentReference` that Accounting sends with a paid order. 1.2.0 adds `listShippingMethods`
+    (`GET /shipping/methods`) for Storefront's checkout. Additions only, no breaking change.
+    Changelog: CONTRACT_REVIEW.md.
 
     Identifiers: an order id looks like `O-1001` (Storefront) or `M-2001` (Marketplace), a shipment id like `S-2001`.
     They are different things. Never use an order id where a shipment id is expected.
@@ -21,7 +24,32 @@ servers:
 tags:
   - name: shipments
     description: Create, read and update shipments.
+  - name: shipping
+    description: Delivery options offered at checkout.
 paths:
+  /shipping/methods:
+    get:
+      operationId: listShippingMethods
+      tags: [shipping]
+      summary: List the available shipping methods
+      description: |
+        Added in 1.2.0. Use at checkout to show the customer the delivery options with carrier,
+        delivery time and price. The `code` of the chosen option is the `shippingMethod` value
+        to send later in `createShipment`. Prices are in minor units (499 = 4.99 EUR).
+      security: []
+      responses:
+        "200":
+          description: All shipping methods that can be chosen now.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShippingMethodList"
+        "422":
+          description: The request had query parameters; this operation takes none (code VALIDATION_ERROR).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /shipments:
     post:
       operationId: createShipment
@@ -318,6 +346,12 @@ components:
           $ref: "#/components/schemas/ShippingAddress"
         shippingMethod:
           $ref: "#/components/schemas/ShippingMethod"
+        paymentReference:
+          type: string
+          minLength: 1
+          maxLength: 64
+          pattern: "^[A-Za-z0-9-]+$"
+          description: Optional (added in 1.1.0). Accounting's reference for the confirmed payment, for example PAY-1. Logistics stores it and returns it on the shipment; it does not check it.
     Shipment:
       type: object
       additionalProperties: false
@@ -358,6 +392,9 @@ components:
           minimum: 0
           maximum: 3
           description: Number of failed delivery attempts. At 3 the shipment is returned automatically.
+        paymentReference:
+          type: string
+          description: Optional (added in 1.1.0). Accounting's payment reference, copied from the order. Present only if Accounting sent one.
     CarrierStatusUpdate:
       type: object
       additionalProperties: false
@@ -436,6 +473,57 @@ components:
           type: integer
         totalPages:
           type: integer
+    Money:
+      type: object
+      additionalProperties: false
+      required: [amountMinor, currency]
+      properties:
+        amountMinor:
+          type: integer
+          minimum: 0
+          description: Amount in minor units, e.g. 499 for 4.99 EUR.
+        currency:
+          type: string
+          pattern: "^[A-Z]{3}$"
+          description: ISO 4217 code, e.g. EUR.
+    ShippingMethodOption:
+      type: object
+      additionalProperties: false
+      required:
+        [code, carrierCode, name, description, estimatedDeliveryDays, price]
+      properties:
+        code:
+          $ref: "#/components/schemas/ShippingMethod"
+        carrierCode:
+          type: string
+          description: Carrier that will deliver, e.g. DHL. The shipment gets the same carrier.
+        name:
+          type: string
+          description: Short label for the checkout, e.g. "Standard delivery".
+        description:
+          type: string
+        estimatedDeliveryDays:
+          type: object
+          additionalProperties: false
+          required: [min, max]
+          properties:
+            min:
+              type: integer
+              minimum: 0
+            max:
+              type: integer
+              minimum: 0
+        price:
+          $ref: "#/components/schemas/Money"
+    ShippingMethodList:
+      type: object
+      additionalProperties: false
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ShippingMethodOption"
     ShipmentList:
       type: object
       additionalProperties: false

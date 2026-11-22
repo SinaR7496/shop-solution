@@ -51,10 +51,16 @@ endpoint does not serve as service-to-service authentication for Accounting.
 
 - **Paid-order owner or Accounting.** Agree who verifies payment and calls
   the shipment API, how the caller authenticates and how retries are handled.
-  The draft request requires `orderId`, `customerId`, `paymentStatus: PAID`,
-  `shippingAddress` and `shippingMethod` (`STANDARD` or `EXPRESS`). Extra
-  fields, including `paymentReference`, are rejected. A second shipment for
-  the same order returns `409 ORDER_ALREADY_HAS_SHIPMENT`.
+  Agreed in session 7: Accounting verifies payment and calls the shipment API.
+  The request requires `orderId`, `customerId`, `paymentStatus: PAID`,
+  `shippingAddress` and `shippingMethod` (`STANDARD` or `EXPRESS`), and may
+  carry an optional `paymentReference` (contract 1.1.0). Other extra fields are
+  rejected. A second shipment for the same order returns
+  `409 ORDER_ALREADY_HAS_SHIPMENT`.
+- **Storefront checkout.** `GET /shipping/methods` (contract 1.2.0) lists the
+  delivery options with carrier, delivery time and price.
+- **Session 7.** Flow, threat list, safeguard and `servers.json` are in
+  [docs/session7](docs/session7/README.md).
 - **Storefront.** Agree on an order-detail URL and shared login. Set
   `NEXT_PUBLIC_LOGISTICS_STOREFRONT_URL` to the URL prefix. Logistics appends
   the encoded order ID. The local demo page is reachable only in demo mode.

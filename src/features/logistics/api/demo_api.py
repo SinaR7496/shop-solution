@@ -24,6 +24,7 @@ def has_token(authorization: bytes, token: str | None) -> bool:
 app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"], allow_methods=["GET", "POST"], allow_headers=["Authorization", "Content-Type"])
 @app.middleware("http")
 async def require_demo_token(request, call_next):
+    # /shipping/methods (contract 1.2.0) is public read-only checkout data, so it needs no token.
     if request.url.path.startswith("/shipments") and request.method != "OPTIONS":
         authorization = request.headers.get("authorization", "").encode("latin-1")
         if has_token(authorization, TOKEN):

@@ -86,7 +86,9 @@ def test_contract_has_three_to_five_operations_each_with_a_documented_error_case
     operations = [
         op for path in api.SPEC["paths"].values() for op in path.values()
     ]
-    assert 3 <= len(operations) <= 5
+    # Session 5 asked for 3 to 5 operations. Session 7 allows additions to an agreed contract
+    # (1.2.0 adds listShippingMethods for Storefront), so only the lower bound still applies.
+    assert len(operations) >= 3
     for op in operations:
         assert op["operationId"] and op["summary"] and op["description"]
         assert any(code.startswith("4") for code in op["responses"])

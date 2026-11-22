@@ -43,3 +43,15 @@ def test_accounting_creates_and_storefront_reads_the_same_shipment(monkeypatch):
         assert shipment["status"] == "CREATED"
         assert client.get(shipment_path + "/events", headers=storefront).json() == {"data": []}
         assert client.post(shipment_path + "/status-updates", headers=storefront).status_code == 403
+
+
+def test_shipping_methods_are_public_for_storefront_checkout(monkeypatch):
+    monkeypatch.setenv("LOGISTICS_API_TOKEN", "internal-test-token")
+    monkeypatch.setenv("LOGISTICS_ACCOUNTING_TOKEN", "accounting-test-token")
+    monkeypatch.setenv("LOGISTICS_STOREFRONT_TOKEN", "storefront-test-token")
+    monkeypatch.delitem(sys.modules, "erp_logistics_api", raising=False)
+    app = runpy.run_module("demo_api")["app"]
+    with TestClient(app) as client:
+        assert client.get("/shipping/methods", headers={"Authorization": "Bearer storefront-test-token"}).status_code == 200
+        assert client.get("/shipping/methods").status_code == 200
+        assert client.post("/shipping/methods").status_code == 405
