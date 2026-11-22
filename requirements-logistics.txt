@@ -1,4 +1,4 @@
-# Runtime and verification for Session 6; legacy agent dependencies remain in api/requirements.txt.
+# Logistics runtime and verification.
 fastapi==0.162.2
 uvicorn==0.54.0
 pydantic==2.14.3

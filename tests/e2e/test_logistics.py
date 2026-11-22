@@ -1,12 +1,14 @@
 """Draft acceptance tests. Human review is pending; freeze after that review.
 Run against the demo: python -m pytest tests/e2e/test_logistics.py -q
 """
+import os
 import re
 import time
 from datetime import datetime, timedelta, timezone
 import pytest
 from playwright.sync_api import sync_playwright, expect
-BASE = "http://127.0.0.1:3000"
+BASE = os.environ.get("LOGISTICS_DEMO_TEST_URL", "http://127.0.0.1:3000")
+API_BASE = os.environ.get("LOGISTICS_DEMO_TEST_API_URL", "http://127.0.0.1:8000")
 @pytest.fixture(scope="session")
 def browser():
     with sync_playwright() as p:
@@ -119,7 +121,7 @@ def test_service_down_message(page):
 def test_unsigned_gateway_and_direct_backend_are_rejected(browser):
     context = browser.new_context()
     assert context.request.get(BASE + "/api/v1/logistics/shipments").status == 401
-    assert context.request.get("http://127.0.0.1:8000/shipments").status == 401
+    assert context.request.get(API_BASE + "/shipments").status == 401
     context.close()
 
 def test_keyboard_tracking_and_mobile_layout(page):

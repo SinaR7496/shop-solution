@@ -612,17 +612,19 @@ export function LogisticsWorkspace({
                         </div>
                       ))}
                     </dl>
-                    <a
-                      className="inline-block underline"
-                      href={
-                        storefrontUrl
-                          ? `${storefrontUrl}${encodeURIComponent(shipment.orderId)}`
-                          : `/logistics/demo/storefront?orderId=${encodeURIComponent(shipment.orderId)}`
-                      }
-                    >
-                      View order in Storefront
-                      {storefrontUrl ? "" : " (demo stub)"}
-                    </a>
+                    {(storefrontUrl || demo) && (
+                      <a
+                        className="inline-block underline"
+                        href={
+                          storefrontUrl
+                            ? `${storefrontUrl}${encodeURIComponent(shipment.orderId)}`
+                            : `/logistics/demo/storefront?orderId=${encodeURIComponent(shipment.orderId)}`
+                        }
+                      >
+                        View order in Storefront
+                        {storefrontUrl ? "" : " (demo stub)"}
+                      </a>
+                    )}
                     <h3 className="border-t pt-4 font-semibold">
                       Status history
                     </h3>
