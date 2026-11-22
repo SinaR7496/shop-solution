@@ -9,3 +9,8 @@ test-results/
 .DS_Store
 *.tsbuildinfo
 src/generated/
+
+# Logistics local verification
+.venv/
+__pycache__/
+.pytest_cache/
