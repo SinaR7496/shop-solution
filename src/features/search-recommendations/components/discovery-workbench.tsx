@@ -307,7 +307,7 @@ export function DiscoveryWorkbench() {
               rel="noreferrer"
               className="font-medium text-foreground underline underline-offset-4"
             >
-             Admin &amp; Identity (Back Office)
+              Admin &amp; Identity (Back Office)
             </Link>
             <Link
               href="http://localhost:8000/docs"

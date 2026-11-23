@@ -280,10 +280,9 @@ test("the Admin & Identity handoff links to its UI and API docs", async ({
   await expect(
     page.getByRole("link", { name: "Admin & Identity (Back Office)" }),
   ).toHaveAttribute("target", "_blank");
-  await expect(page.getByRole("link", { name: "Identity API docs" })).toHaveAttribute(
-    "href",
-    "http://localhost:8000/docs",
-  );
+  await expect(
+    page.getByRole("link", { name: "Identity API docs" }),
+  ).toHaveAttribute("href", "http://localhost:8000/docs");
   await expect(
     page.getByRole("link", { name: "Marketing (Campaigns & Codes)" }),
   ).toHaveAttribute("href", "http://localhost:3000/admin/codes");
